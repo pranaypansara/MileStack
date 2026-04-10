@@ -51,7 +51,7 @@ Instead of informal agreements:
 - Express.js
 
 ### Database
-- MongoDB (or MySQL)
+- MongoDB / MySQL
 
 ### Other
 - JWT Authentication
@@ -61,11 +61,11 @@ Instead of informal agreements:
 
 ## 🔄 Workflow
 
-1. Freelancer creates a gig with milestones
-2. Client accepts and funds escrow
-3. Freelancer completes milestone
-4. Client approves → payment released
-5. Repeat until project completion
+1. Freelancer creates a gig with milestones  
+2. Client accepts and funds escrow  
+3. Freelancer completes milestone  
+4. Client approves → payment released  
+5. Repeat until project completion  
 
 ---
 
@@ -80,21 +80,16 @@ Instead of informal agreements:
 
 ## 📦 Project Status
 
-🚧 Currently in development (MVP phase)
+🚧 MVP in progress
 
 ---
 
-## 🛠️ Setup (Basic)
+## 🛠️ Setup
 
 ```bash
 # Clone the repo
 git clone https://github.com/your-username/milestack.git
 
-# Navigate to project
 cd milestack
-
-# Install dependencies
 npm install
-
-# Run server
 npm run dev
