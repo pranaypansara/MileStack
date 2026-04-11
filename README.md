@@ -1,95 +1,60 @@
-# 🚀 Milestack
+# Milestack
 
-Milestack is an escrow-based freelancing platform designed to eliminate **payment fraud** and **project ghosting** in small-scale freelance work.
+A simple escrow-based freelancing platform focused on milestone payments and accountability.
 
-## 💡 Problem
+## Problem
 
-In traditional freelancing:
-- Clients sometimes **don’t pay after work is completed**
-- Freelancers sometimes **abandon projects after partial payment**
-- No structured accountability system exists for small gigs
+Freelancing platforms often fail at enforcing accountability. Common issues include:
 
-## ✅ Solution
+* Clients not paying after work is completed
+* Freelancers abandoning projects midway
+* No structured approval or milestone validation system
 
-Milestack introduces:
-- 💰 **Escrow-based payments**
-- 📌 **Milestone-driven projects**
-- 🔒 **Mutual accountability for both client and freelancer**
+## Solution
 
----
+Milestack introduces a milestone-driven escrow system where:
 
-## 🧠 Core Concept
+* Funds are locked before work begins
+* Work is divided into clear milestones
+* Each milestone must be approved before payment is released
 
-Instead of informal agreements:
+## Current Status (Phase 0)
 
-1. Freelancer creates a **gig for a specific client**
-2. Project is divided into **milestones**
-3. Client deposits money into **escrow**
-4. Payment is released **only after milestone completion**
+* Basic contract creation system implemented
+* Client can create contracts and define milestones
 
----
+## Known Issue
 
-## ⚙️ Features (MVP)
+Currently, freelancers are automatically added to contracts without approval.
 
-- 👤 Single account (can act as both client & freelancer)
-- 📄 Gig creation (freelancer → specific client)
-- 🧩 Milestone breakdown system
-- 💳 Escrow payment handling
-- ✅ Milestone approval system
-- 🔐 Authentication (JWT-based)
+### Planned Fix
 
----
+* Introduce a freelancer approval step before joining a contract
+* Workflow:
 
-## 🏗️ Tech Stack
+  1. Client creates contract
+  2. Freelancer receives request
+  3. Freelancer accepts or rejects
+  4. Contract becomes active only after acceptance
 
-### Frontend
-- React.js (planned)
-- Tailwind CSS
+## Tech Stack
 
-### Backend
-- Node.js
-- Express.js
+* Frontend: (TBD)
+* Backend: Node.js, Express.js
+* Database: MongoDB
+* Auth: JWT
 
-### Database
-- MongoDB / MySQL
+## Future Plans
 
-### Other
-- JWT Authentication
-- Cloud Storage (AWS S3 or similar)
+* Milestone dispute system
+* Automated escrow handling
+* Ratings and reputation system
+* Notifications
+
+## Goal
+
+Build a minimal but reliable system that prevents payment fraud and project ghosting in small freelance gigs.
 
 ---
 
-## 🔄 Workflow
-
-1. Freelancer creates a gig with milestones  
-2. Client accepts and funds escrow  
-3. Freelancer completes milestone  
-4. Client approves → payment released  
-5. Repeat until project completion  
-
----
-
-## 🎯 Goals
-
-- Prevent **client non-payment**
-- Prevent **freelancer ghosting**
-- Build **trust in informal freelance markets**
-- Target **small gigs & Indian freelance ecosystem**
-
----
-
-## 📦 Project Status
-
-🚧 MVP in progress
-
----
-
-## 🛠️ Setup
-
-```bash
-# Clone the repo
-git clone https://github.com/your-username/milestack.git
-
-cd milestack
-npm install
-npm run dev
+This is an MVP project and will evolve based on real-world testing.
