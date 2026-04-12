@@ -14,7 +14,8 @@ const createContract = async (req, res) => {
       clientId: req.user._id,
       freelancerId,
       totalAmount,
-      status: 'active',
+      status: 'pending_freelancer_approval',
+      freelancerApproved: false,
       paymentStatus: 'pending', // Client will "deposit" later
     });
 
@@ -93,4 +94,55 @@ const depositFunds = async (req, res) => {
     }
 }
 
-module.exports = { createContract, getContracts, getContractById, depositFunds };
+// @desc    Freelancer accepts contract
+// @route   POST /api/contracts/:id/accept
+// @access  Private
+const acceptContract = async (req, res) => {
+  try {
+    const contract = await Contract.findById(req.params.id);
+    if (!contract) return res.status(404).json({ message: 'Contract not found' });
+
+    if (contract.freelancerId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Only the assigned freelancer can accept this contract' });
+    }
+
+    if (contract.status !== 'pending_freelancer_approval') {
+      return res.status(400).json({ message: 'Contract is not pending approval' });
+    }
+
+    contract.status = 'active';
+    contract.freelancerApproved = true;
+    await contract.save();
+
+    res.json({ message: 'Contract accepted successfully', contract });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Freelancer rejects contract
+// @route   POST /api/contracts/:id/reject
+// @access  Private
+const rejectContract = async (req, res) => {
+  try {
+    const contract = await Contract.findById(req.params.id);
+    if (!contract) return res.status(404).json({ message: 'Contract not found' });
+
+    if (contract.freelancerId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Only the assigned freelancer can reject this contract' });
+    }
+
+    if (contract.status !== 'pending_freelancer_approval') {
+      return res.status(400).json({ message: 'Contract is not pending approval' });
+    }
+
+    contract.status = 'rejected';
+    await contract.save();
+
+    res.json({ message: 'Contract rejected successfully', contract });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { createContract, getContracts, getContractById, depositFunds, acceptContract, rejectContract };
