@@ -22,8 +22,16 @@ const contractSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'completed', 'disputed'],
-      default: 'active',
+      enum: ['pending_freelancer_approval', 'active', 'completed', 'disputed', 'rejected'],
+      default: 'pending_freelancer_approval',
+    },
+    freelancerApproved: {
+      type: Boolean,
+      default: false,
+    },
+    clientApproved: {
+      type: Boolean,
+      default: true,
     },
     totalAmount: {
       type: Number,

@@ -48,6 +48,10 @@ const updateMilestoneStatus = async (req, res) => {
 
     const contract = await Contract.findById(milestone.contractId);
 
+    if (contract.status !== 'active') {
+      return res.status(400).json({ message: 'Cannot update milestone because the contract is not active' });
+    }
+
     const isClient = contract.clientId.toString() === req.user._id.toString();
     const isFreelancer = contract.freelancerId.toString() === req.user._id.toString();
 

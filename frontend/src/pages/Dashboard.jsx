@@ -23,8 +23,31 @@ const Dashboard = () => {
     fetchContracts();
   }, [user]);
 
+  const handleAccept = async (id) => {
+    try {
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/contracts/${id}/accept`, {}, config);
+      setContracts(contracts.map(c => c._id === id ? { ...c, status: 'active', freelancerApproved: true } : c));
+    } catch (error) {
+      alert(error.response?.data?.message || 'Error accepting contract');
+    }
+  };
+
+  const handleReject = async (id) => {
+    try {
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/contracts/${id}/reject`, {}, config);
+      setContracts(contracts.map(c => c._id === id ? { ...c, status: 'rejected' } : c));
+    } catch (error) {
+      alert(error.response?.data?.message || 'Error rejecting contract');
+    }
+  };
+
   const clientContracts = contracts.filter((c) => c.clientId._id === user._id);
   const freelancerContracts = contracts.filter((c) => c.freelancerId._id === user._id);
+  
+  const pendingFreelancerContracts = freelancerContracts.filter((c) => c.status === 'pending_freelancer_approval');
+  const otherFreelancerContracts = freelancerContracts.filter((c) => c.status !== 'pending_freelancer_approval');
 
   if (loading) return <div>Loading...</div>;
 
@@ -60,10 +83,29 @@ const Dashboard = () => {
       </div>
 
       <div style={{ marginTop: '30px' }}>
-        <h2>Contracts as Freelancer</h2>
-        {freelancerContracts.length === 0 ? <p>No contracts yet.</p> : (
+        <h2>Pending Approvals (Freelancer)</h2>
+        {pendingFreelancerContracts.length === 0 ? <p>No pending contracts.</p> : (
           <ul style={{ listStyle: 'none', padding: 0 }}>
-            {freelancerContracts.map((c) => (
+            {pendingFreelancerContracts.map((c) => (
+              <li key={c._id} style={{ border: '1px solid orange', margin: '10px 0', padding: '15px' }}>
+                <h4>{c.title}</h4>
+                <p>Client: {c.clientId.name} | Total: ${c.totalAmount}</p>
+                <div style={{ marginTop: '10px' }}>
+                  <button onClick={() => handleAccept(c._id)} style={{ marginRight: '10px', background: 'green', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}>✅ Accept</button>
+                  <button onClick={() => handleReject(c._id)} style={{ background: 'red', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}>❌ Reject</button>
+                  <Link to={`/contract/${c._id}`} style={{ marginLeft: '15px' }}>View Details</Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div style={{ marginTop: '30px' }}>
+        <h2>Contracts as Freelancer</h2>
+        {otherFreelancerContracts.length === 0 ? <p>No active contracts.</p> : (
+          <ul style={{ listStyle: 'none', padding: 0 }}>
+            {otherFreelancerContracts.map((c) => (
               <li key={c._id} style={{ border: '1px solid #ccc', margin: '10px 0', padding: '15px' }}>
                 <h4>{c.title}</h4>
                 <p>Client: {c.clientId.name} | Total: ${c.totalAmount} | Status: {c.status}</p>

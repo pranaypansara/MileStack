@@ -70,6 +70,26 @@ const ContractDetail = () => {
       }
   }
 
+  const handleAccept = async () => {
+    try {
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/contracts/${id}/accept`, {}, config);
+      fetchDetails();
+    } catch (error) {
+      alert(error.response?.data?.message || 'Error accepting contract');
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/contracts/${id}/reject`, {}, config);
+      fetchDetails();
+    } catch (error) {
+      alert(error.response?.data?.message || 'Error rejecting contract');
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (!contract) return <div>Contract not found.</div>;
 
@@ -88,11 +108,17 @@ const ContractDetail = () => {
            <strong>Freelancer:</strong> {contract.freelancerId.name}
         </div>
         <div>
-           <strong>Status:</strong> {contract.status}
+           <strong>Status:</strong> <span style={{ padding: '3px 8px', borderRadius: '4px', background: contract.status === 'active' ? '#d4edda' : contract.status === 'pending_freelancer_approval' ? '#fff3cd' : '#f8d7da', border: '1px solid #ccc' }}>{contract.status.replace(/_/g, ' ').toUpperCase()}</span>
+           {!isClient && contract.status === 'pending_freelancer_approval' && (
+              <div style={{ marginTop: '10px' }}>
+                 <button onClick={handleAccept} style={{ background: 'green', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer', marginRight: '10px' }}>✅ Accept</button>
+                 <button onClick={handleReject} style={{ background: 'red', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}>❌ Reject</button>
+              </div>
+           )}
         </div>
         <div>
            <strong>Payment Status:</strong> {contract.paymentStatus.toUpperCase()}
-           {isClient && contract.paymentStatus === 'pending' && (
+           {isClient && contract.paymentStatus === 'pending' && contract.status === 'active' && (
               <button onClick={depositFunds} style={{marginLeft: '10px', background: 'orange'}}>Simulate Deposit to Escrow</button>
            )}
         </div>
@@ -119,10 +145,10 @@ const ContractDetail = () => {
                 <td style={{ padding: '8px' }}>
                     
                     {/* Freelancer Actions */}
-                    {!isClient && m.status === 'pending' && (
+                    {!isClient && contract.status === 'active' && m.status === 'pending' && (
                         <button onClick={() => updateMilestone(m._id, 'in-progress')}>Start Working</button>
                     )}
-                    {!isClient && m.status === 'in-progress' && (
+                    {!isClient && contract.status === 'active' && m.status === 'in-progress' && (
                         <button onClick={() => updateMilestone(m._id, 'completed')}>Mark Completed</button>
                     )}
 
